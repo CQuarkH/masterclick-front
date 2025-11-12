@@ -5,6 +5,16 @@ export interface AuthState {
   username: string;
   email: string;
   isLoggedIn?: boolean;
+  role?: 'client' | 'master';
+  masterProfile?: {
+    profession: string;
+    rating: number;
+    reviewCount: number;
+    pricePerHour: number;
+    location: string;
+    yearsExperience: number;
+    isActive: boolean;
+  };
 }
 
 export const useAuthStore = defineStore("authStore", {
@@ -13,6 +23,8 @@ export const useAuthStore = defineStore("authStore", {
     username: "",
     email: "",
     isLoggedIn: false,
+    role: 'client',
+    masterProfile: undefined,
   }),
   actions: {
     async fetch() {
@@ -23,15 +35,32 @@ export const useAuthStore = defineStore("authStore", {
         this.username = userData.username;
         this.email = userData.email;
         this.isLoggedIn = true;
+        this.role = userData.role || 'client';
+        this.masterProfile = userData.masterProfile;
       }
     },
-    async setUser(userData: { id: number; username: string; email: string }) {
+    async setUser(userData: { id: number; username: string; email: string; role?: 'client' | 'master'; masterProfile?: any }) {
       this.id = userData.id;
       this.username = userData.username;
       this.email = userData.email;
       this.isLoggedIn = true;
+      this.role = userData.role || 'client';
+      this.masterProfile = userData.masterProfile;
 
       localStorage.setItem("authUser", JSON.stringify(userData));
+    },
+    switchRole(role: 'client' | 'master') {
+      if (this.masterProfile) {
+        this.role = role;
+        const userData = {
+          id: this.id,
+          username: this.username,
+          email: this.email,
+          role: this.role,
+          masterProfile: this.masterProfile,
+        };
+        localStorage.setItem("authUser", JSON.stringify(userData));
+      }
     },
     async login(username: string, password: string) {
       const res = await $fetch("/api/auth/login", {
