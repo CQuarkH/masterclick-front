@@ -1,38 +1,48 @@
-export default defineEventHandler(() => {
-  const masters = [
-    {
-      id: 1,
-      name: "Carlos Soto",
-      profession: "Carpintero",
-      rating: 4.8,
-      pricePerHour: 15000,
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
-    },
-    {
-      id: 2,
-      name: "María López",
-      profession: "Jardinera",
-      rating: 4.6,
-      pricePerHour: 12000,
-      image: "https://randomuser.me/api/portraits/women/45.jpg",
-    },
-    {
-      id: 3,
-      name: "José Rivas",
-      profession: "Mecánico",
-      rating: 4.9,
-      pricePerHour: 18000,
-      image: "https://randomuser.me/api/portraits/men/12.jpg",
-    },
-    {
-      id: 4,
-      name: "Ana Torres",
-      profession: "Electricista",
-      rating: 4.7,
-      pricePerHour: 16000,
-      image: "https://randomuser.me/api/portraits/women/56.jpg",
-    },
-  ];
+import { masters } from '~/server/data/masters';
 
-  return masters;
+export default defineEventHandler((event) => {
+  const query = getQuery(event);
+  const category = query.category as string | undefined;
+  const search = query.search as string | undefined;
+  const minRating = query.minRating ? Number(query.minRating) : undefined;
+
+  let filteredMasters = [...masters];
+
+  // Filtrar por categoría
+  if (category) {
+    filteredMasters = filteredMasters.filter(
+      (m) => m.category === category
+    );
+  }
+
+  // Filtrar por búsqueda (nombre o profesión)
+  if (search) {
+    const searchLower = search.toLowerCase();
+    filteredMasters = filteredMasters.filter(
+      (m) =>
+        m.name.toLowerCase().includes(searchLower) ||
+        m.profession.toLowerCase().includes(searchLower) ||
+        m.description.toLowerCase().includes(searchLower)
+    );
+  }
+
+  // Filtrar por rating mínimo
+  if (minRating) {
+    filteredMasters = filteredMasters.filter((m) => m.rating >= minRating);
+  }
+
+  // Retornar solo los campos necesarios para el listado
+  return filteredMasters.map((m) => ({
+    id: m.id,
+    name: m.name,
+    profession: m.profession,
+    category: m.category,
+    rating: m.rating,
+    reviewCount: m.reviewCount,
+    pricePerHour: m.pricePerHour,
+    image: m.image,
+    location: m.location,
+    verified: m.verified,
+    responseTime: m.responseTime,
+  }));
 });
