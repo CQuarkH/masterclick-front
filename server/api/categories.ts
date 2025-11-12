@@ -1,4 +1,4 @@
-import { categories } from '../data/masters';
+import { categories } from "../data/masters";
 
 export default defineEventHandler(() => {
   return categories;

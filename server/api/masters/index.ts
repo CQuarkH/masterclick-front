@@ -1,4 +1,4 @@
-import { masters } from '../../data/masters';
+import { masters } from "../../data/masters";
 
 export default defineEventHandler((event) => {
   const query = getQuery(event);
@@ -10,9 +10,7 @@ export default defineEventHandler((event) => {
 
   // Filtrar por categoría
   if (category) {
-    filteredMasters = filteredMasters.filter(
-      (m) => m.category === category
-    );
+    filteredMasters = filteredMasters.filter((m) => m.category === category);
   }
 
   // Filtrar por búsqueda (nombre o profesión)
