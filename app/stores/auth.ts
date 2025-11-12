@@ -5,7 +5,7 @@ export interface AuthState {
   username: string;
   email: string;
   isLoggedIn?: boolean;
-  role?: 'client' | 'master';
+  role?: "client" | "master";
   masterProfile?: {
     profession: string;
     rating: number;
@@ -23,11 +23,11 @@ export const useAuthStore = defineStore("authStore", {
     username: "",
     email: "",
     isLoggedIn: false,
-    role: 'client',
+    role: "client",
     masterProfile: undefined,
   }),
   actions: {
-    async fetch() {
+    fetch() {
       const storedUser = localStorage.getItem("authUser");
       if (storedUser) {
         const userData = JSON.parse(storedUser);
@@ -35,21 +35,27 @@ export const useAuthStore = defineStore("authStore", {
         this.username = userData.username;
         this.email = userData.email;
         this.isLoggedIn = true;
-        this.role = userData.role || 'client';
+        this.role = userData.role || "client";
         this.masterProfile = userData.masterProfile;
       }
     },
-    async setUser(userData: { id: number; username: string; email: string; role?: 'client' | 'master'; masterProfile?: any }) {
+    setUser(userData: {
+      id: number;
+      username: string;
+      email: string;
+      role?: "client" | "master";
+      masterProfile?: any;
+    }) {
       this.id = userData.id;
       this.username = userData.username;
       this.email = userData.email;
       this.isLoggedIn = true;
-      this.role = userData.role || 'client';
+      this.role = userData.role || "client";
       this.masterProfile = userData.masterProfile;
 
       localStorage.setItem("authUser", JSON.stringify(userData));
     },
-    switchRole(role: 'client' | 'master') {
+    switchRole(role: "client" | "master") {
       if (this.masterProfile) {
         this.role = role;
         const userData = {

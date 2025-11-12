@@ -1,8 +1,8 @@
-export default defineNuxtPlugin(async () => {
+export default defineNuxtPlugin(() => {
   const authStore = useAuthStore();
 
   // Evita llamar fetch más de una vez
   if (!authStore.isLoggedIn) {
-    await authStore.fetch();
+    authStore.fetch();
   }
 });

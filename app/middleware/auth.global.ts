@@ -1,5 +1,8 @@
 export default defineNuxtRouteMiddleware((to, from) => {
+  if (process.server) return;
+
   const authStore = useAuthStore();
+
   const isAuthenticated = () => {
     return authStore.isLoggedIn;
   };
@@ -11,12 +14,14 @@ export default defineNuxtRouteMiddleware((to, from) => {
     to.path !== "/"
   ) {
     return navigateTo("/login");
-  }
-
-  if (
+  } else if (
     isAuthenticated() === true &&
     (to.path === "/login" || to.path === "/register" || to.path === "/")
   ) {
     return navigateTo("/home");
+  }
+
+  if (authStore.role === "master" && to.path === "/home") {
+    return navigateTo("/master/dashboard");
   }
 });
