@@ -1,4 +1,4 @@
-import { masters } from '~/server/data/masters';
+import { masters } from '../../data/masters';
 
 export default defineEventHandler((event) => {
   const query = getQuery(event);
